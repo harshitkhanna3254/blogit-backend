@@ -5,10 +5,12 @@ const {
   updateArticle,
 } = require("../controllers/articleController");
 
+const { protect, jwtCookieAuth } = require("../middlewares/authMiddleware.js");
+
 const router = express.Router();
 
-router.route("/").get(getArticles).post(postArticle);
-
-router.route("/:id").put(updateArticle);
+router.route("/:id?").get(jwtCookieAuth, getArticles);
+router.route("/").post(jwtCookieAuth, postArticle);
+router.route("/:id").put(jwtCookieAuth, updateArticle);
 
 module.exports = router;
