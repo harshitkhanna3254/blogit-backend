@@ -61,11 +61,7 @@ const addFollowing = asyncHandler(async (req, res) => {
       name: userToFollow.name,
     };
 
-    console.log(userToPush);
-
     user.following.push(userToPush);
-
-    console.log(user);
 
     await user.save();
 

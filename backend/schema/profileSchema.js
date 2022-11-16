@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { DEFAULT_HEADLINE } = require("../constants/constants");
+const { DEFAULT_HEADLINE, DUMMY_IMAGE_URL } = require("../constants/constants");
 
 const followingSchema = new mongoose.Schema(
   {
@@ -19,6 +19,20 @@ const followingSchema = new mongoose.Schema(
     },
   },
   { timestamps: true }
+);
+
+const imageSchema = new mongoose.Schema(
+  {
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: "User",
+    },
+    image: { data: Buffer, contentType: String },
+  },
+  {
+    timestamps: true,
+  }
 );
 
 const profileSchema = new mongoose.Schema(
@@ -57,6 +71,7 @@ const profileSchema = new mongoose.Schema(
     },
     avatar: {
       type: String,
+      default: DUMMY_IMAGE_URL,
     },
     headline: {
       type: String,

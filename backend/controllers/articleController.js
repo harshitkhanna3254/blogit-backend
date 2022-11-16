@@ -5,7 +5,6 @@ const Article = require("../schema/articleSchema");
 
 const getArticles = asyncHandler(async (req, res) => {
   const loggedInUser = req.user;
-  console.log(loggedInUser);
   const id = req.params.id;
 
   if (id) {
@@ -51,7 +50,7 @@ const postArticle = asyncHandler(async (req, res) => {
   }
 
   const newArticle = await Article.create({
-    user: loggedInUser.id,
+    user: loggedInUser._id,
     text: req.body.text,
     author: loggedInUser.username,
   });
@@ -75,60 +74,90 @@ const updateArticle = asyncHandler(async (req, res) => {
   }
 
   const article = await Article.findById(articledId);
-  console.log(article);
+
   if (!article) {
     res.status(404);
     throw new Error("Article not found");
   }
 
-  if (article.user.toString() !== loggedInUser.id) {
-    res.status(401);
-    throw new Error("User not authorized to update this article");
-  }
-
-  try {
-    if (!commentId) {
-      const updatedArticle = await Article.findByIdAndUpdate(
-        req.params.id,
-        { text },
-        { new: true }
-      );
-
-      if (updatedArticle) {
-        res.status(200);
-        res.json(updatedArticle);
-      } else {
-        res.status(400);
-        throw new Error("Article could not be updated");
-      }
+  if (!commentId) {
+    console.log("No comment id sent");
+    if (article.user.toString() !== loggedInUser._id.toString()) {
+      res.status(401);
+      throw new Error("User not authorized to update this article");
     }
-    // else {
-    //   const updatedComment = {
-    //     user: loggedInUser._id,
-    //     name: loggedInUser.name,
-    //     comment: text,
-    //   };
 
-    //   const allComments = article.comments;
+    const updatedComment = {
+      user: loggedInUser._id,
+      name: loggedInUser.name,
+      comment: text,
+    };
 
-    //   const ogComment = allComments.find((comment) => {
-    //     return comment._id == commentId;
-    //   });
+    const updatedArticle = await Article.findByIdAndUpdate(
+      req.params.id,
+      { text },
+      { new: true }
+    );
 
-    //   allComments[ogCommentId] = updatedComment;
+    if (updatedArticle) {
+      res.status(200);
+      res.json(updatedArticle);
+    } else {
+      res.status(400);
+      throw new Error("Article could not be updated");
+    }
+  } else if (commentId == -1) {
+    console.log("Comment Id: -1");
+    const newComment = {
+      user: loggedInUser._id,
+      username: loggedInUser.username,
+      comment: text,
+    };
 
-    //   const updatedArticle = await Article.findByIdAndUpdate(
-    //     articledId,
-    //     { comments: allComments },
-    //     { new: true }
-    //   );
+    article.comments.push(newComment);
 
-    //   res.status(200);
-    //   res.json({ article: updatedArticle });
-    // }
-  } catch (error) {
-    res.status(400);
-    throw new Error("Some error occured");
+    await article.save();
+
+    res.status(200);
+    res.json({ username: loggedInUser.username, article });
+  } else {
+    console.log("Comment Id sent");
+    if (!isValidObjectId(commentId)) {
+      res.status(400);
+      throw new Error("Comment Id is not valid");
+    }
+
+    const commentFound = article.comments.find((comment) => {
+      return comment._id == commentId;
+    });
+
+    if (!commentFound) {
+      res.status(400);
+      throw new Error("No comment found with the requested Id");
+    }
+
+    console.log(commentFound);
+    console.log(loggedInUser);
+
+    if (commentFound.user.toString() != loggedInUser._id.toString()) {
+      res.status(401);
+      throw new Error("User not authorized to update this comment");
+    }
+
+    const commentFoundIdx = article.comments.indexOf(commentFound);
+
+    const updatedComment = {
+      user: loggedInUser._id,
+      username: loggedInUser.username,
+      comment: text,
+    };
+
+    article.comments[commentFoundIdx] = updatedComment;
+
+    await article.save();
+
+    res.status(200);
+    res.json({ article });
   }
 });
 

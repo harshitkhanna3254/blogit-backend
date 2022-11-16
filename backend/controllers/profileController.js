@@ -11,8 +11,9 @@ const User = require("../schema/userSchema");
 
 const getProfile = asyncHandler(async (req, res) => {
   const loggedInUser = req.user;
+  console.log(loggedInUser);
 
-  const user = await Profile.find({ user: loggedInUser.id });
+  const user = await Profile.findOne({ user: loggedInUser._id });
 
   res.json(user);
 });
@@ -142,35 +143,29 @@ const getDob = asyncHandler(async (req, res) => {
 });
 
 const getAvatar = asyncHandler(async (req, res) => {
-  console.log("Get avatar(zipcode rn) controller");
-
   const loggedInUser = req.user;
-  const userData = await Profile.findOne({ user: loggedInUser._id }).select(
-    "zipcode"
+
+  const user = await Profile.findOne({ user: loggedInUser._id }).select(
+    "avatar"
   );
-  console.log(userData);
+
+  console.log(user);
 
   res.status(200);
-  res.json({ username: loggedInUser.username, zipcode: userData.zipcode });
+  res.json({ username: loggedInUser.username, avatar: user.avatar });
 });
 
 const updateAvatar = asyncHandler(async (req, res) => {
-  console.log("Update avatar(zipcode rn) controller");
-  try {
-    const loggedInUser = req.user;
+  const loggedInUser = req.user;
 
-    const updatedUser = await Profile.findOneAndUpdate(
-      { user: loggedInUser._id },
-      req.body,
-      { new: true }
-    );
+  const updatedUser = await Profile.findOneAndUpdate(
+    { user: loggedInUser._id },
+    req.body,
+    { new: true }
+  );
 
-    res.status(200);
-    res.json({ username: loggedInUser.username, zipcode: updatedUser.zipcode });
-  } catch (error) {
-    res.status(500);
-    throw new Error("Some problem while updating zipCode");
-  }
+  res.status(200);
+  res.json({ username: loggedInUser.username, avatar: updatedUser.avatar });
 });
 
 const updatePassword = asyncHandler(async (req, res) => {
