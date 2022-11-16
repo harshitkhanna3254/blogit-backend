@@ -5,7 +5,7 @@ const {
   updateArticle,
 } = require("../controllers/articleController");
 
-const { protect, jwtCookieAuth } = require("../middlewares/authMiddleware.js");
+const { jwtCookieAuth } = require("../middlewares/authMiddleware.js");
 
 const router = express.Router();
 
