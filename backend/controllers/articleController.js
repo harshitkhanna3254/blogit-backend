@@ -12,11 +12,9 @@ const getArticles = asyncHandler(async (req, res) => {
       //Id is an Article Id (MongoDB Object)
 
       try {
-        var articles = [];
         const article = await Article.findById(id);
-        articles.push(article);
         res.status(200);
-        res.json({ articles });
+        res.json({ article });
       } catch (error) {
         res.status(401);
         throw new Error("Unable to find the article with the requested id");
@@ -24,7 +22,7 @@ const getArticles = asyncHandler(async (req, res) => {
     } else {
       //Id is a username
       try {
-        const articles = await Article.find({ username: id });
+        const articles = await Article.find({ author: id });
         res.status(200);
         res.json({ articles });
       } catch (error) {
