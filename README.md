@@ -8,9 +8,7 @@
 
 # Routes:
 
-## Note
-
-###### Some Routes are a bit different to the default ones (those mentioned in the course website). Hence, I'm adding all the routes below for help.
+## Note ###### Some Routes are a bit different to the default ones (those mentioned in the course website). Hence, I'm adding all the routes below for help.
 
     ## Auth Routes:
         1. Register new user (POST): /auth/register
