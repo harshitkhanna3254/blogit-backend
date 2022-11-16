@@ -17,10 +17,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-app.use("/api/articles", require("./routes/articleRoutes"));
-app.use("/api/profile", require("./routes/profileRoutes"));
-app.use("/api/auth", require("./routes/authRoutes"));
-app.use("/api/following", require("./routes/followingRoutes"));
+app.use("/articles", require("./routes/articleRoutes"));
+app.use("/profile", require("./routes/profileRoutes"));
+app.use("/auth", require("./routes/authRoutes"));
+app.use("/following", require("./routes/followingRoutes"));
 
 app.use(errorHandler);
 
