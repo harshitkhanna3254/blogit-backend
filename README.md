@@ -2,7 +2,7 @@
 
 "netid": "hk57"
 
-"frontend": "blogit-frontend-rice.surge.sh"
+"frontend": "https://blogit-frontend-rice.surge.sh"
 
 "backend": "https://blog-it-rice.herokuapp.com"
 
@@ -10,9 +10,14 @@
 
 ## Note
 
-Some Routes are a bit different to the default ones (those mentioned in the course website). Hence, I'm adding all the routes below for help.
+Some Routes are a bit different (just some prefix difference) to the default ones (those mentioned in the course website).
+Hence, I'm adding all the routes below for help.
 
 ## Auth Routes:
+
+> /auth is the prefix
+
+> Note: Will work as per the desciption on: https://www.clear.rice.edu/comp431/data/api.html#api
 
         1. Register new user (POST): /auth/register
             body: {
@@ -36,7 +41,7 @@ Some Routes are a bit different to the default ones (those mentioned in the cour
 
 ## Article Routes:
 
-        > Note: Will work as per the desciption on: https://www.clear.rice.edu/comp431/data/api.html#api
+> Note: Will work as per the desciption on: https://www.clear.rice.edu/comp431/data/api.html#api
 
         1. Get all articles (GET): /articles/hk57
 
@@ -53,17 +58,45 @@ Some Routes are a bit different to the default ones (those mentioned in the cour
 
 ## Profile Routes:
 
-        > Note: Will work as per the desciption on: https://www.clear.rice.edu/comp431/data/api.html#api
+> /profile is the prefix
 
-        1. Get all articles (GET): /articles/hk57
+> Note: Will work as per the desciption on: https://www.clear.rice.edu/comp431/data/api.html#api
 
-        2. Post new article (POST): /articles
+        1. Get Logged In user profole (GET): /profile/me
+
+        2. Get Logged In user headline (GET): profile/headline
+
+        3. Get Logged In user email (GET): /profile/email
+
+        4. Get Logged In user dob (GET): /profile/dob
+
+        5. Get Logged In user zipcode (GET): /profile/zipcode
+
+        6. Get Logged In user avatar (GET): /profile/avatar
+
+        ----
+
+        7. Update Password for Logged In user (PUT): profile/password
             body: {
-                "text": "Second article Lorem ipsum"
+                "password": "abcdef"
             }
 
-        3. Update an article (PUT): /articles/637450ffb917ad6728386e6c
+        8. Update Headline for Logged In user (PUT): profile/headline
             body: {
-                "text": "Random text",
-                "commentId": "637453e163f7ff5c34d11762"
+                "headline": "Test Headline"
+            }
+
+        9. Update Avatar for Logged In user (PUT): profile/avatar
+            body: {
+                "avatar": "https://randomImage.jpg"
+            }
+
+        10. Update Zipcode for Logged In user (PUT): profile/zipcode
+            body: {
+                "zipcode": "11111"
+            }
+
+        11. Update Email for Logged In user (PUT): profile/email
+            body: {
+                "email": "test@rice.edu"
             }
