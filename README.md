@@ -12,7 +12,8 @@
 
 Some Routes are a bit different to the default ones (those mentioned in the course website). Hence, I'm adding all the routes below for help.
 
-    ## Auth Routes:
+## Auth Routes:
+
         1. Register new user (POST): /auth/register
             body: {
                 "username": "shre1",
@@ -33,7 +34,8 @@ Some Routes are a bit different to the default ones (those mentioned in the cour
 
         3. /auth/logout
 
-    ## Article Routes:
+## Article Routes:
+
         > Note: Will work as per the desciption on: https://www.clear.rice.edu/comp431/data/api.html#api
 
         1. Get all articles (GET): /articles/hk57
@@ -49,7 +51,8 @@ Some Routes are a bit different to the default ones (those mentioned in the cour
                 "commentId": "637453e163f7ff5c34d11762"
             }
 
-     ## Profile Routes:
+## Profile Routes:
+
         > Note: Will work as per the desciption on: https://www.clear.rice.edu/comp431/data/api.html#api
 
         1. Get all articles (GET): /articles/hk57
