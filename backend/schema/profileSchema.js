@@ -1,6 +1,26 @@
 const mongoose = require("mongoose");
 const { DEFAULT_HEADLINE } = require("../constants/constants");
 
+const followingSchema = new mongoose.Schema(
+  {
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: "User",
+    },
+    username: {
+      type: String,
+      unique: true,
+      required: [true, "Please add a username"],
+    },
+    name: {
+      type: String,
+      required: [true, "Please add a name"],
+    },
+  },
+  { timestamps: true }
+);
+
 const profileSchema = new mongoose.Schema(
   {
     user: {
@@ -25,6 +45,7 @@ const profileSchema = new mongoose.Schema(
       type: Number,
       required: [true, "Please add a phone number"],
     },
+    following: [followingSchema],
     zipcode: {
       type: Number,
     },

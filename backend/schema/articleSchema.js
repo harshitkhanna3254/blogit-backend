@@ -35,7 +35,6 @@ const articleSchema = new mongoose.Schema(
     comments: [commentSchema],
   },
   {
-    _id: false,
     timestamps: true,
   }
 );

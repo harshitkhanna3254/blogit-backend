@@ -20,6 +20,7 @@ app.use(cookieParser());
 app.use("/api/articles", require("./routes/articleRoutes"));
 app.use("/api/profile", require("./routes/profileRoutes"));
 app.use("/api/auth", require("./routes/authRoutes"));
+app.use("/api/following", require("./routes/followingRoutes"));
 
 app.use(errorHandler);
 

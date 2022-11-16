@@ -12,7 +12,9 @@ const User = require("../schema/userSchema");
 const getProfile = asyncHandler(async (req, res) => {
   const loggedInUser = req.user;
 
-  res.json(loggedInUser);
+  const user = await Profile.find({ user: loggedInUser.id });
+
+  res.json(user);
 });
 
 const getHeadline = asyncHandler(async (req, res) => {
@@ -52,7 +54,8 @@ const updateHeadline = asyncHandler(async (req, res) => {
 
   const updatedUser = await Profile.findOneAndUpdate(
     { user: loggedInUser._id },
-    req.body
+    req.body,
+    { new: true }
   );
 
   res.status(200);
@@ -80,7 +83,8 @@ const updateEmail = asyncHandler(async (req, res) => {
 
     const updatedUser = await Profile.findOneAndUpdate(
       { user: loggedInUser._id },
-      req.body
+      req.body,
+      { new: true }
     );
 
     res.status(200);
@@ -109,7 +113,8 @@ const updateZipcode = asyncHandler(async (req, res) => {
 
     const updatedUser = await Profile.findOneAndUpdate(
       { user: loggedInUser._id },
-      req.body
+      req.body,
+      { new: true }
     );
 
     res.status(200);
@@ -156,7 +161,8 @@ const updateAvatar = asyncHandler(async (req, res) => {
 
     const updatedUser = await Profile.findOneAndUpdate(
       { user: loggedInUser._id },
-      req.body
+      req.body,
+      { new: true }
     );
 
     res.status(200);

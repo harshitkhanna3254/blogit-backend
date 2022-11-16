@@ -8,7 +8,12 @@ const Profile = require("../schema/profileSchema");
 const User = require("../schema/userSchema");
 
 //Constants
-const { HASH_SALT, JWT_TOKEN_TIME } = require("../constants/constants");
+const {
+  HASH_SALT,
+  JWT_TOKEN_TIME,
+  COOKIE_NAME,
+  SUCCESS,
+} = require("../constants/constants");
 
 const registerUser = asyncHandler(async (req, res) => {
   const {
@@ -81,6 +86,11 @@ const registerUser = asyncHandler(async (req, res) => {
 });
 
 const loginUser = asyncHandler(async (req, res) => {
+  if (req.cookies.token) {
+    res.status(400);
+    throw new Error("A user is already logged in");
+  }
+
   const { username, password } = req.body;
 
   if (!username || !password) {
@@ -96,7 +106,7 @@ const loginUser = asyncHandler(async (req, res) => {
   }
 
   if (user && (await bcrypt.compare(password, user.password))) {
-    res.cookie("token", generateToken(user.id), {
+    res.cookie(COOKIE_NAME, generateToken(user.id), {
       httpOnly: true,
     });
 
@@ -111,6 +121,12 @@ const loginUser = asyncHandler(async (req, res) => {
   }
 });
 
+const logoutUser = asyncHandler(async (req, res) => {
+  res.clearCookie(COOKIE_NAME);
+  res.status(200);
+  res.json({ message: SUCCESS });
+});
+
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: JWT_TOKEN_TIME,
@@ -120,4 +136,5 @@ const generateToken = (id) => {
 module.exports = {
   loginUser,
   registerUser,
+  logoutUser,
 };
