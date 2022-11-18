@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites disabled="0" errors="0" failures="0" tests="8" time="0.862">
+ <testsuite name="All Tests" timestamp="2022-11-18T02:07:36" hostname="localhost" time="0.862" errors="0" tests="8" skipped="0" disabled="0" failures="0">
+  <testcase classname="All Tests" name="Register a new User" time="0.239" />
+  <testcase classname="All Tests" name="Login a registered user" time="0.119" />
+  <testcase classname="All Tests" name="Get the headline" time="0.086" />
+  <testcase classname="All Tests" name="Update the headline" time="0.093" />
+  <testcase classname="All Tests" name="POST a new Article" time="0.092" />
+  <testcase classname="All Tests" name="Get all articles" time="0.091" />
+  <testcase classname="All Tests" name="Get article by id(username)" time="0.092" />
+  <testcase classname="All Tests" name="Logout the logged in user" time="0.046" />
+ </testsuite>
+</testsuites>
