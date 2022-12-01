@@ -17,6 +17,9 @@ const followingSchema = new mongoose.Schema(
       type: String,
       required: [true, "Please add a name"],
     },
+    avatar: {
+      type: Object,
+    },
   },
   { timestamps: true }
 );
@@ -72,6 +75,9 @@ const profileSchema = new mongoose.Schema(
     avatar: {
       type: String,
       default: DUMMY_IMAGE_URL,
+    },
+    avatarCloud: {
+      type: Object,
     },
     headline: {
       type: String,

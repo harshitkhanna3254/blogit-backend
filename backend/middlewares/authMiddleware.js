@@ -38,7 +38,7 @@ const protect = asyncHandler(async (req, res, next) => {
 const jwtCookieAuth = asyncHandler(async (req, res, next) => {
   try {
     const token = req.cookies.token;
-    console.log(token);
+    console.log("Cookie val", token);
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 

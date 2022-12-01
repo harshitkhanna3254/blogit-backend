@@ -5,6 +5,9 @@ const SUCCESS = "Success";
 const COOKIE_NAME = "token";
 const DUMMY_IMAGE_URL = "https://picsum.photos/200";
 
+//Cloudinary constants
+const BLOGIT_PRESET = "blogitPreset";
+
 module.exports = {
   DEFAULT_HEADLINE,
   HASH_SALT,
@@ -12,4 +15,5 @@ module.exports = {
   SUCCESS,
   COOKIE_NAME,
   DUMMY_IMAGE_URL,
+  BLOGIT_PRESET,
 };

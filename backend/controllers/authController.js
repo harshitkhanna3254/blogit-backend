@@ -13,20 +13,12 @@ const {
   JWT_TOKEN_TIME,
   COOKIE_NAME,
   SUCCESS,
+  DUMMY_IMAGE_URL,
 } = require("../constants/constants");
 
 const registerUser = asyncHandler(async (req, res) => {
-  const {
-    username,
-    email,
-    password,
-    name,
-    phoneNumber,
-    zipcode,
-    gender,
-    dob,
-    avatar,
-  } = req.body;
+  const { username, email, password, name, phoneNumber, zipcode, gender, dob } =
+    req.body;
 
   if (
     !username ||
@@ -59,6 +51,12 @@ const registerUser = asyncHandler(async (req, res) => {
     password: hashedPassword,
   });
 
+  console.log(user);
+
+  const avatarCloud = {
+    url: DUMMY_IMAGE_URL,
+  };
+
   //Create Profile
   const profile = await Profile.create({
     user: user._id,
@@ -69,12 +67,14 @@ const registerUser = asyncHandler(async (req, res) => {
     zipcode,
     gender,
     dob,
+    avatarCloud,
   });
 
   if (user && profile) {
     res.status(201);
 
     res.json({
+      result: SUCCESS,
       username: profile.username,
       email: profile.email,
       name: profile.name,
@@ -86,10 +86,10 @@ const registerUser = asyncHandler(async (req, res) => {
 });
 
 const loginUser = asyncHandler(async (req, res) => {
-  if (req.cookies.token) {
-    res.status(400);
-    throw new Error("A user is already logged in");
-  }
+  // if (req.cookies.token) {
+  //   res.status(400);
+  //   throw new Error("A user is already logged in");
+  // }
 
   const { username, password } = req.body;
 
@@ -106,16 +106,21 @@ const loginUser = asyncHandler(async (req, res) => {
   }
 
   if (user && (await bcrypt.compare(password, user.password))) {
+    console.log("Cookie being set");
     res.cookie(COOKIE_NAME, generateToken(user.id), {
       httpOnly: true,
+      sameSite: "none",
+      secure: true,
+      maxAge: 24 * 60 * 60 * 1000,
     });
 
     res.json({
+      result: SUCCESS,
       _id: user.id,
       username: user.username,
     });
   } else {
-    res.status(404);
+    res.status(403);
     throw new Error("Incorrect password");
   }
 });

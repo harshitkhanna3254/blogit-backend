@@ -1,15 +1,17 @@
 //Imports
 const asyncHandler = require("express-async-handler");
 const bcrypt = require("bcryptjs");
+const cloudinary = require("../config/cloudinary");
 
 //Constants
-const { SUCCESS, HASH_SALT } = require("../constants/constants");
+const { SUCCESS, HASH_SALT, BLOGIT_PRESET } = require("../constants/constants");
 
 //Schema
 const Profile = require("../schema/profileSchema");
 const User = require("../schema/userSchema");
 
 const getProfile = asyncHandler(async (req, res) => {
+  // console.log(req.user);
   const loggedInUser = req.user;
   console.log(loggedInUser);
 
@@ -79,9 +81,9 @@ const getEmail = asyncHandler(async (req, res) => {
 
 const updateEmail = asyncHandler(async (req, res) => {
   console.log("Update email controller");
-  try {
-    const loggedInUser = req.user;
+  const loggedInUser = req.user;
 
+  try {
     const updatedUser = await Profile.findOneAndUpdate(
       { user: loggedInUser._id },
       req.body,
@@ -93,6 +95,123 @@ const updateEmail = asyncHandler(async (req, res) => {
   } catch (error) {
     res.status(500);
     throw new Error("Some problem while updating email");
+  }
+});
+
+const getName = asyncHandler(async (req, res) => {
+  console.log("Inside get name controller", req.params.username);
+
+  try {
+    const loggedInUser = req.user;
+
+    const username = req.params.username || loggedInUser.username;
+
+    const userData = await Profile.findOne({ username }).select("name");
+    console.log(userData);
+
+    res.status(200);
+    res.json({ username, name: userData.name });
+  } catch (error) {
+    res.status(500);
+    throw new Error("Some problem while getting name");
+  }
+});
+
+const updateName = asyncHandler(async (req, res) => {
+  console.log("Update name controller");
+  try {
+    const loggedInUser = req.user;
+
+    const updatedUser = await Profile.findOneAndUpdate(
+      { user: loggedInUser._id },
+      req.body,
+      { new: true }
+    );
+
+    res.status(200);
+    res.json({ username: loggedInUser.username, name: updatedUser.name });
+  } catch (error) {
+    res.status(500);
+    throw new Error("Some problem while updating name");
+  }
+});
+
+const getPhoneNumber = asyncHandler(async (req, res) => {
+  console.log("Inside get phone number controller", req.params.username);
+
+  try {
+    const loggedInUser = req.user;
+
+    const username = req.params.username || loggedInUser.username;
+
+    const userData = await Profile.findOne({ username }).select("phoneNumber");
+    console.log(userData);
+
+    res.status(200);
+    res.json({ username, phoneNumber: userData.phoneNumber });
+  } catch (error) {
+    res.status(500);
+    throw new Error("Some problem while getting name");
+  }
+});
+
+const updatePhoneNumber = asyncHandler(async (req, res) => {
+  console.log("Update phone number controller");
+  try {
+    const loggedInUser = req.user;
+
+    const updatedUser = await Profile.findOneAndUpdate(
+      { user: loggedInUser._id },
+      req.body,
+      { new: true }
+    );
+
+    res.status(200);
+    res.json({
+      username: loggedInUser.username,
+      phoneNumber: updatedUser.phoneNumber,
+    });
+  } catch (error) {
+    res.status(500);
+    throw new Error("Some problem while updating name");
+  }
+});
+
+const getGender = asyncHandler(async (req, res) => {
+  console.log("Get gender controller", req.params.username);
+
+  try {
+    const loggedInUser = req.user;
+
+    const username = req.params.username || loggedInUser.username;
+
+    const userData = await Profile.findOne({ username }).select("gender");
+    console.log(userData);
+
+    res.status(200);
+    res.json({ username, gender: userData.gender });
+  } catch (error) {
+    res.status(500);
+    throw new Error("Some problem while getting gender");
+  }
+});
+
+const updateGender = asyncHandler(async (req, res) => {
+  console.log("Update gender controller");
+  try {
+    const loggedInUser = req.user;
+
+    const updatedUser = await Profile.findOneAndUpdate(
+      { user: loggedInUser._id },
+      req.body,
+      { new: true }
+    );
+
+    res.status(200);
+    res.json({ username: loggedInUser.username, gender: updatedUser.gender });
+  } catch (error) {
+    res.status(500);
+    throw new Error("Some problem while updating gender");
   }
 });
 
@@ -146,26 +265,50 @@ const getAvatar = asyncHandler(async (req, res) => {
   const loggedInUser = req.user;
 
   const user = await Profile.findOne({ user: loggedInUser._id }).select(
-    "avatar"
+    "avatarCloud"
   );
 
   console.log(user);
 
   res.status(200);
-  res.json({ username: loggedInUser.username, avatar: user.avatar });
+  res.json({ username: loggedInUser.username, avatar: user.avatarCloud });
 });
 
 const updateAvatar = asyncHandler(async (req, res) => {
+  console.log("Update avatar called");
   const loggedInUser = req.user;
 
-  const updatedUser = await Profile.findOneAndUpdate(
-    { user: loggedInUser._id },
-    req.body,
-    { new: true }
-  );
+  //Here, req.body will contain the base_64 encoded image string as 'avatar'
+  // console.log("Req.body: Base 64 encoded image string: ", req.body.avatar);
 
-  res.status(200);
-  res.json({ username: loggedInUser.username, avatar: updatedUser.avatar });
+  //Cloudinary
+  var cloudUploadRes;
+  try {
+    cloudUploadRes = await cloudinary.uploader.upload(req.body.avatar, {
+      upload_preset: BLOGIT_PRESET,
+    });
+  } catch (error) {
+    res.status(500);
+    throw new Error("Some problem with cloudinary");
+  }
+
+  //Saving cloudinary res in avatar
+  try {
+    const updatedUser = await Profile.findOneAndUpdate(
+      { user: loggedInUser._id },
+      { avatarCloud: cloudUploadRes },
+      { new: true }
+    );
+
+    res.status(200);
+    res.json({
+      username: loggedInUser.username,
+      avatar: updatedUser.avatarCloud,
+    });
+  } catch (error) {
+    res.status(500);
+    throw new Error("Some problem while updating Image");
+  }
 });
 
 const updatePassword = asyncHandler(async (req, res) => {
@@ -199,6 +342,12 @@ module.exports = {
   updateHeadline,
   getEmail,
   updateEmail,
+  getName,
+  updateName,
+  getGender,
+  updateGender,
+  getPhoneNumber,
+  updatePhoneNumber,
   getZipcode,
   updateZipcode,
   getDob,

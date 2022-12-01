@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { DUMMY_IMAGE_URL } = require("../constants/constants");
 
 //Schema for comments on each Article
 const commentSchema = new mongoose.Schema(
@@ -23,14 +24,24 @@ const articleSchema = new mongoose.Schema(
       required: true,
       ref: "User",
     },
-
     author: {
       type: String,
-      required: [true, "Please add a text value"],
+      required: [true, "Please add author username"],
     },
-    text: {
+    name: {
       type: String,
-      required: [true, "Please add a text value"],
+      required: [true, "Please add author name"],
+    },
+    body: {
+      type: String,
+      required: [true, "Please add post body"],
+    },
+    image: {
+      type: String,
+      default: DUMMY_IMAGE_URL,
+    },
+    imageCloud: {
+      type: Object,
     },
     comments: [commentSchema],
   },

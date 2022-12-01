@@ -1,13 +1,37 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuites disabled="0" errors="0" failures="0" tests="8" time="0.862">
- <testsuite name="All Tests" timestamp="2022-11-18T02:07:36" hostname="localhost" time="0.862" errors="0" tests="8" skipped="0" disabled="0" failures="0">
-  <testcase classname="All Tests" name="Register a new User" time="0.239" />
-  <testcase classname="All Tests" name="Login a registered user" time="0.119" />
-  <testcase classname="All Tests" name="Get the headline" time="0.086" />
-  <testcase classname="All Tests" name="Update the headline" time="0.093" />
-  <testcase classname="All Tests" name="POST a new Article" time="0.092" />
-  <testcase classname="All Tests" name="Get all articles" time="0.091" />
-  <testcase classname="All Tests" name="Get article by id(username)" time="0.092" />
-  <testcase classname="All Tests" name="Logout the logged in user" time="0.046" />
+<testsuites disabled="0" errors="0" failures="5" tests="8" time="0.68">
+ <testsuite name="All Tests" timestamp="2022-11-18T02:30:12" hostname="localhost" time="0.68" errors="0" tests="8" skipped="0" disabled="0" failures="5">
+  <testcase classname="All Tests" name="Register a new User" time="0.071">
+   <failure type="toEqual" message="Expected undefined to equal &apos;testUser&apos;."><![CDATA[at <Jasmine>
+    at /Users/harshit/Documents/Code/Class/Comp 531/HW6/spec/backend.spec.js:28:30
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)]]>
+   </failure>
+   <failure type="toEqual" message="Expected undefined to equal &apos;test@rice.edu&apos;."><![CDATA[at <Jasmine>
+    at /Users/harshit/Documents/Code/Class/Comp 531/HW6/spec/backend.spec.js:29:27
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)]]>
+   </failure>
+  </testcase>
+  <testcase classname="All Tests" name="Login a registered user" time="0.117" />
+  <testcase classname="All Tests" name="Get the headline" time="0.084">
+   <failure type="toEqual" message="Expected &apos;New Headline&apos; to equal &apos;Welcome to Blog-It&apos;."><![CDATA[at <Jasmine>
+    at /Users/harshit/Documents/Code/Class/Comp 531/HW6/spec/backend.spec.js:69:30
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)]]>
+   </failure>
+  </testcase>
+  <testcase classname="All Tests" name="Update the headline" time="0.09" />
+  <testcase classname="All Tests" name="POST a new Article" time="0.094" />
+  <testcase classname="All Tests" name="Get all articles" time="0.089">
+   <failure type="toEqual" message="Expected 3 to equal 1."><![CDATA[at <Jasmine>
+    at /Users/harshit/Documents/Code/Class/Comp 531/HW6/spec/backend.spec.js:123:37
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)]]>
+   </failure>
+  </testcase>
+  <testcase classname="All Tests" name="Get article by id(username)" time="0.087">
+   <failure type="toEqual" message="Expected 3 to equal 1."><![CDATA[at <Jasmine>
+    at /Users/harshit/Documents/Code/Class/Comp 531/HW6/spec/backend.spec.js:138:37
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)]]>
+   </failure>
+  </testcase>
+  <testcase classname="All Tests" name="Logout the logged in user" time="0.044" />
  </testsuite>
 </testsuites>

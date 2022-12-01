@@ -1,7 +1,28 @@
 const asyncHandler = require("express-async-handler");
 const { isValidObjectId } = require("mongoose");
+const cloudinary = require("../config/cloudinary");
+const { BLOGIT_PRESET } = require("../constants/constants");
 
 const Article = require("../schema/articleSchema");
+
+// Efficient way to get articles
+// db.articles.find({"author": { $in: ["swat", "abcd"]}}).sort({"createdAt": -1})
+
+const getArticlesByRequestedUsers = asyncHandler(async (req, res) => {
+  const { requestedUsers } = req.body;
+
+  try {
+    const requestedArticles = await Article.find({
+      author: { $in: requestedUsers },
+    }).sort({ createdAt: -1 });
+
+    res.status(201);
+    res.json({ articles: requestedArticles });
+  } catch (error) {
+    res.status(401);
+    throw new Error("Unable to find articles for the requested user");
+  }
+});
 
 const getArticles = asyncHandler(async (req, res) => {
   const loggedInUser = req.user;
@@ -40,25 +61,65 @@ const getArticles = asyncHandler(async (req, res) => {
 });
 
 const postArticle = asyncHandler(async (req, res) => {
-  const { text } = req.body;
+  const { body, name, image } = req.body;
   const loggedInUser = req.user;
-  if (!text) {
+  if (!body) {
     res.status(400);
-    throw new Error("Text not found");
+    throw new Error("Text body not found");
   }
 
-  const newArticle = await Article.create({
-    user: loggedInUser._id,
-    text: req.body.text,
-    author: loggedInUser.username,
-  });
+  if (image) {
+    console.log("Both image and text found");
+    //Cloudinary
+    var cloudUploadRes;
+    try {
+      cloudUploadRes = await cloudinary.uploader.upload(image, {
+        upload_preset: BLOGIT_PRESET,
+      });
+    } catch (error) {
+      res.status(500);
+      throw new Error("Some problem with cloudinary");
+    }
 
-  res.status(200).json(newArticle);
+    try {
+      const newArticle = await Article.create({
+        user: loggedInUser._id,
+        body: req.body.body,
+        author: loggedInUser.username,
+        name,
+        imageCloud: cloudUploadRes,
+      });
+
+      res.status(200).json(newArticle);
+    } catch (error) {
+      res.status(500);
+      throw new Error("Some Mongo Error occured");
+    }
+  } else {
+    console.log("Only text found");
+
+    try {
+      const newArticle = await Article.create({
+        user: loggedInUser._id,
+        body: req.body.body,
+        author: loggedInUser.username,
+        name,
+        imageCloud: {
+          url: "",
+        },
+      });
+
+      res.status(200).json(newArticle);
+    } catch (error) {
+      res.status(500);
+      throw new Error("Some Mongo Error occured");
+    }
+  }
 });
 
 const updateArticle = asyncHandler(async (req, res) => {
   const articledId = req.params.id;
-  const { text, commentId } = req.body;
+  const { body, commentId } = req.body;
   const loggedInUser = req.user;
 
   if (!articledId) {
@@ -66,9 +127,9 @@ const updateArticle = asyncHandler(async (req, res) => {
     throw new Error("Please add article id to params");
   }
 
-  if (!text) {
+  if (!body) {
     res.status(400);
-    throw new Error("Text not found");
+    throw new Error("Text body not found");
   }
 
   const article = await Article.findById(articledId);
@@ -85,21 +146,15 @@ const updateArticle = asyncHandler(async (req, res) => {
       throw new Error("User not authorized to update this article");
     }
 
-    const updatedComment = {
-      user: loggedInUser._id,
-      name: loggedInUser.name,
-      comment: text,
-    };
-
     const updatedArticle = await Article.findByIdAndUpdate(
       req.params.id,
-      { text },
+      { body },
       { new: true }
     );
 
     if (updatedArticle) {
       res.status(200);
-      res.json(updatedArticle);
+      res.json({ updatedArticle });
     } else {
       res.status(400);
       throw new Error("Article could not be updated");
@@ -109,7 +164,7 @@ const updateArticle = asyncHandler(async (req, res) => {
     const newComment = {
       user: loggedInUser._id,
       username: loggedInUser.username,
-      comment: text,
+      comment: body,
     };
 
     article.comments.push(newComment);
@@ -147,7 +202,7 @@ const updateArticle = asyncHandler(async (req, res) => {
     const updatedComment = {
       user: loggedInUser._id,
       username: loggedInUser.username,
-      comment: text,
+      comment: body,
     };
 
     article.comments[commentFoundIdx] = updatedComment;
@@ -160,6 +215,7 @@ const updateArticle = asyncHandler(async (req, res) => {
 });
 
 module.exports = {
+  getArticlesByRequestedUsers,
   getArticles,
   postArticle,
   updateArticle,

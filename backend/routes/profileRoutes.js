@@ -11,9 +11,15 @@ const {
   updateAvatar,
   updatePassword,
   getDob,
+  getName,
+  updateName,
+  getPhoneNumber,
+  updatePhoneNumber,
+  getGender,
+  updateGender,
 } = require("../controllers/profileController");
 
-const { protect, jwtCookieAuth } = require("../middlewares/authMiddleware.js");
+const { jwtCookieAuth } = require("../middlewares/authMiddleware.js");
 
 const router = express.Router();
 
@@ -29,6 +35,21 @@ router.route("/headline").put(jwtCookieAuth, updateHeadline);
 router.route("/email/:username?").get(jwtCookieAuth, getEmail);
 
 router.route("/email").put(jwtCookieAuth, updateEmail);
+
+//Name routes
+router.route("/name/:username?").get(jwtCookieAuth, getName);
+
+router.route("/name").put(jwtCookieAuth, updateName);
+
+//Phone Number routes
+router.route("/phoneNumber/:username?").get(jwtCookieAuth, getPhoneNumber);
+
+router.route("/phoneNumber").put(jwtCookieAuth, updatePhoneNumber);
+
+//Gender routes
+router.route("/gender/:username?").get(jwtCookieAuth, getGender);
+
+router.route("/gender").put(jwtCookieAuth, updateGender);
 
 //Zipcode routes
 router.route("/zipcode/:username?").get(jwtCookieAuth, getZipcode);

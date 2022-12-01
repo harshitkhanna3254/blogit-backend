@@ -59,6 +59,8 @@ const addFollowing = asyncHandler(async (req, res) => {
       user: userToFollow._id,
       username: userToFollow.username,
       name: userToFollow.name,
+      headline: userToFollow.headline,
+      avatar: userToFollow.avatarCloud.url,
     };
 
     user.following.push(userToPush);
